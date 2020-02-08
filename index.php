@@ -16,11 +16,13 @@ $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $title = $_POST['title'];
+  $due_date = $_POST['due_date'];
 
   //インサートするsql文
   $sql = "insert into plans (title, due_date, created_at, update_at) values (:title, :due_date, now(), now())";
   $stmt = $dbh->prepare($sql);
-  $stmt->bindParam(":title", $title, ":due_date", $due_date);
+  $stmt->bindParam(":title", $title,);
+  $ttmt->bindParam(":due_date", $due_date);
   $stmt->execute();
 
   //index.phpに戻る

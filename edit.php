@@ -2,15 +2,45 @@
 
 //ファイルの読み込み
 require_once('config.php');
-require_once('function.php');
+require_once('functions.php');
 
 $dbh = connectDb();
+$id = $_GET['id'];
 
-//レコードの取得
-$sql = "select * from plans where status = 'not yet'";
-$stmt =$dbh->prepare($sql);
+// SQLの準備と実行
+$sql = "select * from plans where id = :id";
+$stmt = $dbh->prepare($sql);
+$stmt->bindParam(":id", $id);
 $stmt->execute();
-$notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+  $title = $_POST['title'];
+  $due_date = $_POST['due_date'];
+
+  //errorが出なっかたら実行
+  $errors = [];
+  if ($title == '') {
+    $errors['title'] =' ・  タスク名が変更されていません';
+  }
+
+  if ($due_date == '') {
+    $errors['due_date'] = ' ・  日付が変更されていません';
+  }
+
+  if(empty($errors)) {
+    
+    //インサートするsql文
+    $sql = "insert into plans (title, due_date, created_at, updated_at) values (:title, :due_date, now(), now())";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":title", $title);
+    $stmt->bindParam(":due_date", $due_date);
+    $stmt->execute();
+  
+    //index.phpに戻る
+    header('Location: index.php');
+    exit;}
+  }
 
 ?>
 
@@ -28,12 +58,11 @@ $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <form action="" method="post">
       <label for="title"></label>
           <input type="text" name="title" id="">
-    <span style="color:red"><?php echo h($errors['title']); ?></span>
       <label for="due_date">期限日: </label>
       <input type="date" name="due_date" value="due_date">
+      <input type="submit" value="編集"><br>
+      <span style="color:red"><?php echo h($errors['title']); ?></span><br>
       <span style="color:red"><?php echo h($errors['due_date']); ?></span>
-
-      <input type="submit" value="追加"><br>
     </p>
 
   </form>

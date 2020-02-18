@@ -7,14 +7,14 @@ require_once('functions.php');
 $dbh = connectDb();
 
 //レコードの取得
-$sql = "select * from plans where status = 'not yet' order by due_date asc;";
+$sql = "select * from plans where status = 'not yet' order by due_date asc";
 $stmt =$dbh->prepare($sql);
 $stmt->execute();
 $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$sql = "select * from plans where status = 'done'";
+$sql = "select * from plans where status = 'done' order by due_date desc";
 $stmt = $dbh->prepare($sql);
-$stmt->execute();
+$stmt->execute(); 
 $done_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //新規タスクの追加
@@ -26,11 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   //errorが出なっかたら実行
   $errors = [];
   if ($title == '') {
-    $errors['title'] =' ・  タスク名を入力して下さい';
+    $errors['title'] ='タスク名を入力して下さい';
   }
 
   if ($due_date == '') {
-    $errors['due_date'] = ' ・  期限を入力して下さい';
+    $errors['due_date'] = '期限を入力して下さい';
   }
 
   if(empty($errors)) {
@@ -63,17 +63,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <p>
   <form action="" method="post">
-
-    <label for="title">学習内容: </label>
-    <input type="text" name="title" id=""><br>
     
-    <label for="due_date">期限日: </label>
-    <input type="date" name="due_date">
-
+    <label for="title">学習内容: 
+      <input type="text" name="title" id=""><br>
+    </label>
+    
+    <label for="due_date">期限日: 
+      <input type="date" name="due_date">
+    </label>
+    
     <input type="submit" value="追加"><br>
+    
+    <?php if($errors) : ?>
+    <ul>
+      <?php foreach ($errors as $error => $$title) : ?>
+    <li>
+      <span style="color:red"><?php echo h($errors['title']); ?></span><br>
+      <span style="color:red"><?php echo h($errors['due_date']); ?></span>
 
-    <span style="color:red"><?php echo h($errors['title']); ?></span><br>
-    <span style="color:red"><?php echo h($errors['due_date']); ?></span>
+    </li>
+      <?php endforeach; ?>
+    </ul>
+    
+    <?php endif; ?>
 
   </form>
 </p>
@@ -83,11 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <ul>
   <?php foreach ($notyet_plans as $plan) : ?>
-        <?php if (date('Y-m-d') >= $plan['due_date']) : ?>
-        <li class="expired">
-      <?php else : ?>
-        <li>
-      <?php endif; ?>
+  <?php if (date('Y-m-d') >= $plan['due_date']) : ?>
+  <li class="expired">
+    <?php else : ?>
+  <li>
+  <?php endif; ?>
 
     <a href="done.php?id=<?php echo h($plan['id']) ; ?>">[完了]</a>
     <a href="edit.php?id=<?php echo h($plan['id']) ; ?>">[編集]</a>

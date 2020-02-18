@@ -21,11 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   //errorが出なっかたら実行
   $errors = [];
   if ($title == '') {
-    $errors['title'] =' ・  タスク名が変更されていません';
+    $errors['title'] ='タスク名が変更されていません';
   }
 
   if ($due_date == '') {
-    $errors['due_date'] = ' ・  日付が変更されていません';
+    $errors['due_date'] = '日付が変更されていません';
   }
 
   if(empty($errors)) {
@@ -56,11 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <h1>編集</h1>
   <p>
   <form action="" method="post">
-      <label for="title"></label>
-          <input type="text" name="title" id="">
-      <label for="due_date">期限日: </label>
-      <input type="date" name="due_date" value="due_date">
-      <input type="submit" value="編集"><br>
+      <label for="title">
+        <input type="text" name="title" id="">
+      </label>
+
+      <label for="due_date">期限日: 
+        <input type="date" name="due_date" value="due_date">
+        <input type="submit" value="編集"><br>
+      </label>
       <span style="color:red"><?php echo h($errors['title']); ?></span><br>
       <span style="color:red"><?php echo h($errors['due_date']); ?></span>
     </p>

@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <h1>編集</h1>
   <p>
-  <form action="" method="post">
+    <form action="" method="post">
       <label for="title">
         <input type="text" name="title" id="">
       </label>
@@ -64,12 +64,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="date" name="due_date" value="due_date">
         <input type="submit" value="編集"><br>
       </label>
-      <span style="color:red"><?php echo h($errors['title']); ?></span><br>
-      <span style="color:red"><?php echo h($errors['due_date']); ?></span>
-    </p>
 
-  </form>
-
+      <?php if ($errors) : ?>
+        <ul>
+          <?php foreach ($errors as $error) : ?>
+            <span style="color:red"><li><?php echo h($error); ?></li></span>
+          <?php endforeach; ?>
+        </ul>
+      <?php endif; ?>
+    </form>
   </p>
 </body>
 </html>

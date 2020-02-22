@@ -7,7 +7,7 @@ require_once('functions.php');
 $dbh = connectDb();
 
 //レコードの取得
-$sql = "select * from plans where status = 'not yet' order by due_date asc";
+$sql = "select * from plans where status = 'notyet' order by due_date asc";
 $stmt =$dbh->prepare($sql);
 $stmt->execute();
 $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -74,19 +74,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <input type="submit" value="追加"><br>
     
-    <?php if($errors) : ?>
-    <ul>
-      <?php foreach ($errors as $error => $$title) : ?>
-    <li>
-      <span style="color:red"><?php echo h($errors['title']); ?></span><br>
-      <span style="color:red"><?php echo h($errors['due_date']); ?></span>
-
-    </li>
-      <?php endforeach; ?>
-    </ul>
-    
+    <?php if ($errors) : ?>
+      <ul>
+        <?php foreach ($errors as $error) : ?>
+          
+          <span style="color:red"><li><?php echo h($error); ?></li></span>
+          
+        <?php endforeach; ?>
+      </ul>
     <?php endif; ?>
-
   </form>
 </p>
 

@@ -13,6 +13,8 @@ $stmt = $dbh->prepare($sql);
 $stmt->bindParam(":id", $id);
 $stmt->execute();
 
+$plans = $stmt->fetch(PDO::FETCH_ASSOC);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $title = $_POST['title'];
@@ -31,10 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if(empty($errors)) {
     
     //インサートするsql文
-    $sql = "insert into plans (title, due_date, created_at, updated_at) values (:title, :due_date, now(), now())";
+    $sql = "update plans set title =:title, due_date = :due_date,  created_at = now(), updated_at = now() where id = :id";
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(":title", $title);
     $stmt->bindParam(":due_date", $due_date);
+    $stmt->bindParam(":id", $id);
     $stmt->execute();
   
     //index.phpに戻る
@@ -57,21 +60,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <p>
     <form action="" method="post">
       <label for="title">
-        <input type="text" name="title" id="">
+        <input type="text" name="title" id="" value="<?php echo h($plans['title']); ?>">
       </label>
 
       <label for="due_date">期限日: 
-        <input type="date" name="due_date" value="due_date">
+        <input type="date" name="due_date" value="<?php echo h($plans['due_date']); ?>">
         <input type="submit" value="編集"><br>
       </label>
 
-      <?php if ($errors) : ?>
-        <ul>
-          <?php foreach ($errors as $error) : ?>
-            <span style="color:red"><li><?php echo h($error); ?></li></span>
+      <?php if (count($errors) > 0) : ?>
+        <ul style="color:red;">
+          <?php foreach ($errors as $key => $value) : ?>
+            <li><?php echo h($value); ?></li>
           <?php endforeach; ?>
         </ul>
       <?php endif; ?>
+
     </form>
   </p>
 </body>

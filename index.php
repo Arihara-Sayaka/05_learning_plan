@@ -74,15 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <input type="submit" value="追加"><br>
     
-    <?php if ($errors) : ?>
-      <ul>
-        <?php foreach ($errors as $error) : ?>
-          
-          <span style="color:red"><li><?php echo h($error); ?></li></span>
-          
+    <?php if (count($errors) > 0) : ?>
+      <ul style="color:red;">
+        <?php foreach ($errors as $key => $value) : ?>
+          <li><?php echo h($value); ?></li>
         <?php endforeach; ?>
       </ul>
     <?php endif; ?>
+
   </form>
 </p>
 
@@ -95,8 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <li class="expired">
     <?php else : ?>
   <li>
-  <?php endif; ?>
-
+    <?php endif; ?>
     <a href="done.php?id=<?php echo h($plan['id']) ; ?>">[完了]</a>
     <a href="edit.php?id=<?php echo h($plan['id']) ; ?>">[編集]</a>
     <?php echo h($plan['title']); ?> …完了期限: 

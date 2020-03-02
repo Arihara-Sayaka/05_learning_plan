@@ -4,6 +4,8 @@
 require_once('config.php');
 require_once('functions.php');
 
+$errors = array();
+
 $dbh = connectDb();
 $id = $_GET['id'];
 
@@ -21,19 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $due_date = $_POST['due_date'];
 
   //errorが出なっかたら実行
-  $errors = [];
-  if ($title == '') {
+  if ($title == $plans['title']) {
     $errors['title'] ='タスク名が変更されていません';
   }
 
-  if ($due_date == '') {
+  if ($due_date == $plans['due_date']) {
     $errors['due_date'] = '日付が変更されていません';
   }
 
   if(empty($errors)) {
     
     //インサートするsql文
-    $sql = "update plans set title =:title, due_date = :due_date,  created_at = now(), updated_at = now() where id = :id";
+    $sql = "update plans set title =:title, due_date = :due_date, updated_at = now() where id = :id";
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(":title", $title);
     $stmt->bindParam(":due_date", $due_date);
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <h1>編集</h1>
   <p>
     <form action="" method="post">
-      <label for="title">
+      <label for="title">学習内容:
         <input type="text" name="title" id="" value="<?php echo h($plans['title']); ?>">
       </label>
 

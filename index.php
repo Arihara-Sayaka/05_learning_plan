@@ -3,6 +3,7 @@
 //ファイルの読み込み
 require_once('config.php');
 require_once('functions.php');
+$errors = array();
 
 $dbh = connectDb();
 
@@ -24,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $due_date = $_POST['due_date'];
 
   //errorが出なっかたら実行
-  $errors = [];
+
   if ($title == '') {
     $errors['title'] ='タスク名を入力して下さい';
   }

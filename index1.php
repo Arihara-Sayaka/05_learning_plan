@@ -3,7 +3,6 @@
 //ファイルの読み込み
 require_once('config.php');
 require_once('functions.php');
-$errors = array();
 
 $dbh = connectDb();
 
@@ -25,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $due_date = $_POST['due_date'];
 
   //errorが出なっかたら実行
-
+  $errors = [];
   if ($title == '') {
     $errors['title'] ='タスク名を入力して下さい';
   }
@@ -75,12 +74,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <input type="submit" value="追加"><br>
     
-    <?php if (count($errors) > 0) : ?>
-      <ul style="color:red;">
-        <?php foreach ($errors as $key => $value) : ?>
-          <li><?php echo h($value); ?></li>
-        <?php endforeach; ?>
-      </ul>
+    <?php if($errors) : ?>
+    <ul>
+      <?php foreach ($errors as $error => $$title) : ?>
+    <li>
+      <span style="color:red"><?php echo h($errors['title']); ?></span><br>
+      <span style="color:red"><?php echo h($errors['due_date']); ?></span>
+
+    </li>
+      <?php endforeach; ?>
+    </ul>
+    
     <?php endif; ?>
 
   </form>
@@ -95,7 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <li class="expired">
     <?php else : ?>
   <li>
-    <?php endif; ?>
+  <?php endif; ?>
+
     <a href="done.php?id=<?php echo h($plan['id']) ; ?>">[完了]</a>
     <a href="edit.php?id=<?php echo h($plan['id']) ; ?>">[編集]</a>
     <?php echo h($plan['title']); ?> …完了期限: 
